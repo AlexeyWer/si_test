@@ -1,7 +1,5 @@
 from aiohttp import web
 
-
-
 from app.context import AppContext
 
 

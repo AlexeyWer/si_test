@@ -1,6 +1,6 @@
 import typing as tp
 
-import asyncpg
+from databases import Database
 
 from app.utils import secrets
 
@@ -10,11 +10,11 @@ class AppContext:
         self.secrets: secrets.SecretsReader = secrets.SecretsReader(
             secrets_dir
         )
-        self.db: tp.Optional[asyncpg.Pool] = None
+        self.db: tp.Optional[Database] = None
 
     async def on_startup(self, app=None):
-        self.db = await asyncpg.create_pool(self.secrets.get('postgres_dsn'))
+        self.db = await Database(self.secrets.get('postgres_dsn')).connect()
 
     async def on_shutdown(self, app=None):
         if self.db:
-            await self.db.close
+            await self.db.disconnect()
