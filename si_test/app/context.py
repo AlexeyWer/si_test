@@ -13,8 +13,8 @@ class AppContext:
         self.db: tp.Optional[Database] = None
 
     async def on_startup(self, app=None):
-        self.db = await Database(self.secrets.get('postgres_dsn')).connect()
+        self.db = Database(self.secrets.get('postgres_dsn'))
+        await self.db.connect()
 
     async def on_shutdown(self, app=None):
-        if self.db:
-            await self.db.disconnect()
+        await self.db.disconnect()

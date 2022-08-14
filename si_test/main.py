@@ -5,14 +5,19 @@ from aiohttp import web
 from sqlalchemy import create_engine
 
 from app.context import AppContext
+from app.middlewares import AuthMiddleware
 from app import routes
-from db import metadata, create_roles_admin
+from app.db import metadata
+from app.init_db import create_roles_admin
 
 
 async def create_app(args):
     app = web.Application()
 
     ctx = AppContext(secrets_dir=args.secrets_dir)
+
+    auth_middleware = AuthMiddleware(ctx)
+    app.middlewares.append(auth_middleware.middleware)
 
     engine = create_engine(ctx.secrets.get('postgres_dsn'))
     metadata.create_all(engine)
