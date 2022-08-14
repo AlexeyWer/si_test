@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import select, cast, String, update, delete
 
@@ -23,20 +23,21 @@ async def create_user(context: AppContext, user: AuthUserSchema) -> User:
     return User(**user, id=id_new_user)
 
 
-async def get_user_by_username_password(context: AppContext,
-                                        login_user: AuthUserSchema) -> User:
+async def get_user_by_username_password(
+        context: AppContext,
+        login_user: AuthUserSchema) -> Optional[User]:
     query = users.select().where(
         users.c.username == login_user['username'],
         users.c.password == login_user['password'],
     )
     exists = await context.db.fetch_one(query.as_scalar())
     if not exists:
-        return False
+        return None
     row = await context.db.fetch_one(query)
     return User(**row)
 
 
-async def get_user_by_id(context: AppContext, user_id: int) -> User:
+async def get_user_by_id(context: AppContext, user_id: int) -> Optional[User]:
     query = select(
         users.c.id,
         users.c.username,
