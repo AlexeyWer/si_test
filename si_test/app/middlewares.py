@@ -1,6 +1,8 @@
+import logging
 import os
 import json
 from typing import Callable
+from http import HTTPStatus
 
 from aiohttp import web
 import jwt
@@ -38,7 +40,14 @@ class AuthMiddleware:
                 )
             except (jwt.DecodeError, jwt.ExpiredSignatureError):
                 return await json_response(
-                    {'message': 'Token is invalid'}, status=400
+                    {'message': 'Token is invalid'},
+                    status=HTTPStatus.BAD_REQUEST
+                )
+            except Exception as err:
+                logging.error(f'Non handle error: {str(err)}')
+                return await json_response(
+                    {'errors': 'Try again later'},
+                    status=HTTPStatus.SERVICE_UNAVAILABLE
                 )
             user = await crud.get_user_by_id(self.context, payload['user_id'])
             request.user = user

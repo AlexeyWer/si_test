@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./si_test
+    command: |
+      bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python main.py'
+    volumes:
+      - ./si_test/:/usr/src/app/
+    ports:
+      - 8002:8000
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://test:test@db/si_test
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=si_test
+
+volumes:
+  postgres_data:

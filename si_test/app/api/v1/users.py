@@ -1,3 +1,4 @@
+import logging
 from http import HTTPStatus
 
 from aiohttp import web
@@ -10,13 +11,17 @@ from app import crud
 from app.db import Role
 
 
+log = logging.getLogger(__name__)
+
+
 async def get_users_detail(request: web.Request,
                            context: AppContext) -> web.Response:
     user_id = int(request.match_info['user_id'])
 
     try:
         user = await crud.get_user_by_id(context, user_id)
-    except Exception:
+    except Exception as err:
+        log.error(f'Non handle error: {str(err)}')
         return await json_response(
             {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE
@@ -36,7 +41,8 @@ async def get_users_list(request: web.Request,
                          context: AppContext) -> web.Response:
     try:
         users = await crud.get_all_users(context)
-    except Exception:
+    except Exception as err:
+        log.error(f'Non handle error: {str(err)}')
         return await json_response(
             {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE
@@ -68,7 +74,8 @@ async def update_patch_user(request: web.Request,
         update_user = await crud.update_patch_user_by_id(
             context, user_id, data
         )
-    except Exception:
+    except Exception as err:
+        log.error(f'Non handle error: {str(err)}')
         return await json_response(
             {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE
@@ -89,7 +96,8 @@ async def delete_user(request: web.Request,
 
     try:
         user = await crud.get_user_by_id(context, user_id)
-    except Exception:
+    except Exception as err:
+        log.error(f'Non handle error: {str(err)}')
         return await json_response(
             {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE
@@ -103,7 +111,8 @@ async def delete_user(request: web.Request,
 
     try:
         await crud.delete_user_by_id(context, user_id)
-    except Exception:
+    except Exception as err:
+        log.error(f'Non handle error: {str(err)}')
         return await json_response(
             {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE

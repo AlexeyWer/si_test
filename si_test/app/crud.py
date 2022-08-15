@@ -54,7 +54,7 @@ async def get_user_by_id(context: AppContext, user_id: int) -> Optional[User]:
     )
     exists = await context.db.fetch_one(query.as_scalar())
     if not exists:
-        return False
+        return None
     row = await context.db.fetch_one(query)
     return User(**row)
 

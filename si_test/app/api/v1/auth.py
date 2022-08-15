@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from http import HTTPStatus
 
@@ -16,7 +17,32 @@ from app.middlewares import (
 from app import crud
 
 
+log = logging.getLogger(__name__)
+
+
 async def signup(request: web.Request, context: AppContext) -> web.Response:
+    """
+    Optional route description
+    ---
+    summary: Info for a specific pet
+    tags:
+      - pets
+    parameters:
+      - name: pet_id
+        in: path
+        required: true
+        description: The id of the pet to retrieve
+        schema:
+          type: integer
+          format: int32
+    responses:
+      '200':
+        description: Expected response to a valid request
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Pet"
+    """
     user_data = await request.json()
     schema = AuthUserSchema()
 
@@ -30,8 +56,9 @@ async def signup(request: web.Request, context: AppContext) -> web.Response:
     try:
         new_user = await crud.create_user(context, data)
     except Exception as err:
+        log.error(f'Non handle error: {str(err)}')
         return await json_response(
-            {'errors': str(err)},
+            {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE
         )
 
@@ -53,7 +80,8 @@ async def login(request: web.Request, context: AppContext) -> web.Response:
 
     try:
         user = await crud.get_user_by_username_password(context, data)
-    except Exception:
+    except Exception as err:
+        log.error(f'Non handle error: {str(err)}')
         return await json_response(
             {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE

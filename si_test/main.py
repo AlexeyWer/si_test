@@ -1,5 +1,6 @@
+import logging
 import asyncio
-import argparse
+import os
 
 from aiohttp import web
 from sqlalchemy import create_engine
@@ -11,15 +12,18 @@ from app.db import metadata
 from app.init_db import create_roles_admin
 
 
-async def create_app(args):
+log = logging.getLogger(__name__)
+
+
+async def create_app():
     app = web.Application()
 
-    ctx = AppContext(secrets_dir=args.secrets_dir)
+    ctx = AppContext()
 
     auth_middleware = AuthMiddleware(ctx)
     app.middlewares.append(auth_middleware.middleware)
 
-    engine = create_engine(ctx.secrets.get('postgres_dsn'))
+    engine = create_engine(os.getenv('DATABASE_URL'))
     metadata.create_all(engine)
     create_roles_admin(engine)
 
@@ -31,20 +35,12 @@ async def create_app(args):
     return app
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--secrets-dir', type=str, required=True)
-
-    return parser.parse_args()
-
-
 def main():
-    args = parse_args()
-
-    app = asyncio.get_event_loop().run_until_complete(create_app(args))
+    app = asyncio.get_event_loop().run_until_complete(create_app())
 
     web.run_app(app)
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     main()
