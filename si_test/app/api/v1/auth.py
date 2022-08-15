@@ -29,9 +29,9 @@ async def signup(request: web.Request, context: AppContext) -> web.Response:
 
     try:
         new_user = await crud.create_user(context, data)
-    except Exception:
+    except Exception as err:
         return await json_response(
-            {'errors': 'Try again later'},
+            {'errors': str(err)},
             status=HTTPStatus.SERVICE_UNAVAILABLE
         )
 

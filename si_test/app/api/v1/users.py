@@ -28,7 +28,7 @@ async def get_users_detail(request: web.Request,
             status=HTTPStatus.BAD_REQUEST
         )
     return await json_response(
-        {'id': user.id, 'username': user.username}, status=HTTPStatus.OK
+        {'result': user.to_response()}, status=HTTPStatus.OK
     )
 
 
@@ -64,17 +64,17 @@ async def update_patch_user(request: web.Request,
         return await json_response(
             {'errors': err.messages}, status=HTTPStatus.BAD_REQUEST
         )
-
     try:
         update_user = await crud.update_patch_user_by_id(
             context, user_id, data
         )
-    except Exception as e:
+    except Exception:
         return await json_response(
-            {'errors': str(e)}, status=HTTPStatus.SERVICE_UNAVAILABLE
+            {'errors': 'Try again later'},
+            status=HTTPStatus.SERVICE_UNAVAILABLE
         )
     return await json_response(
-        {'result': dict(**update_user)}, status=HTTPStatus.OK
+        {'result': update_user.to_response()}, status=HTTPStatus.OK
     )
 
 
@@ -91,7 +91,7 @@ async def delete_user(request: web.Request,
         user = await crud.get_user_by_id(context, user_id)
     except Exception:
         return await json_response(
-            {'errors': 'The method is not available to you'},
+            {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE
         )
 
@@ -105,9 +105,8 @@ async def delete_user(request: web.Request,
         await crud.delete_user_by_id(context, user_id)
     except Exception:
         return await json_response(
-            {'errors': 'The method is not available to you'},
+            {'errors': 'Try again later'},
             status=HTTPStatus.SERVICE_UNAVAILABLE
         )
-    return await json_response(
-        {}, status=HTTPStatus.NO_CONTENT
-    )
+
+    return await json_response(status=HTTPStatus.NO_CONTENT)

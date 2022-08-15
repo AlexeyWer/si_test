@@ -31,7 +31,7 @@ users = Table(
     Column('username', String(128), unique=True),
     Column('password', String(128), nullable=False),
     Column('date_birth', DateTime, nullable=True),
-    Column('role', Integer, ForeignKey('roles.id')),
+    Column('role', Integer, ForeignKey('roles.id'), unique=False),
     Column('created', DateTime(timezone=True), server_default=func.now()),
 )
 

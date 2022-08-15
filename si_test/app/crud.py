@@ -43,6 +43,7 @@ async def get_user_by_id(context: AppContext, user_id: int) -> Optional[User]:
         users.c.username,
         users.c.first_name,
         users.c.last_name,
+        users.c.date_birth,
         cast(roles.c.title.label('role'), String)
     ).where(
         users.c.id == user_id,
@@ -67,7 +68,7 @@ async def get_all_users(context: AppContext) -> List[dict]:
 async def update_patch_user_by_id(
         context: AppContext,
         user_id: int,
-        update_data: UpdateUserSchema) -> UpdateUserSchema:
+        update_data: UpdateUserSchema) -> User:
     query = update(
         users
     ).where(
@@ -76,7 +77,7 @@ async def update_patch_user_by_id(
         **update_data
     )
     await context.db.execute(query=query)
-    return update_data
+    return await get_user_by_id(context, user_id)
 
 
 async def delete_user_by_id(context: AppContext,

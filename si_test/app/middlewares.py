@@ -14,6 +14,9 @@ JWT_EXP_DELTA_SECONDS = 60 * 60 * 24
 
 
 async def json_response(body: dict = None, **kwargs) -> web.Response:
+    if not body and 'body' not in kwargs.keys():
+        kwargs['body'] = None
+        return web.Response(**kwargs)
     kwargs['body'] = json.dumps(body or kwargs['body']).encode('utf-8')
     kwargs['content_type'] = 'text/json'
     return web.Response(**kwargs)
@@ -38,7 +41,5 @@ class AuthMiddleware:
                     {'message': 'Token is invalid'}, status=400
                 )
             user = await crud.get_user_by_id(self.context, payload['user_id'])
-            if user is None:
-                return await handler(request)
             request.user = user
-            return await handler(request)
+        return await handler(request)

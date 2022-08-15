@@ -20,7 +20,10 @@ class User:
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
-        self.date_birth = date_birth
+        self.date_birth = (
+            date_birth.strftime(BIRTH_DATE_FORMAT)
+            if date_birth is not None else None
+        )
         self.role = role
         self.created = created
 
@@ -28,6 +31,14 @@ class User:
         if self.id:
             return f'<User(id={self.id}, username={self.username})>'
         return f'<User(username={self.username})>'
+
+    def to_response(self):
+        return {
+            key: value
+            for key, value in self.__dict__.items()
+            if value is not None
+            and key != 'role'
+        }
 
 
 class ResponseUserSchema(Schema):

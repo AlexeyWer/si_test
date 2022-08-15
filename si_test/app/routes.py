@@ -57,7 +57,7 @@ def setup_routes(app: web.Application, ctx: AppContext) -> None:
     app.router.add_delete(
         r'/v1/users/{user_id:\d+}',
         wrap_handler(
-            users.update_patch_user,
+            users.delete_user,
             ctx
         )
     )
