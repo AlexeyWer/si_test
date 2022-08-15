@@ -1,15 +1,8 @@
 from enum import Enum, unique
 
-from sqlalchemy import (
-    Column,
-    DateTime,
-    Integer,
-    ForeignKey,
-    MetaData,
-    String,
-    Table,
-    Enum as PgEnum
-)
+from sqlalchemy import Column, DateTime
+from sqlalchemy import Enum as PgEnum
+from sqlalchemy import ForeignKey, Integer, MetaData, String, Table
 from sqlalchemy.sql import func
 
 

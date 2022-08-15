@@ -1,15 +1,15 @@
-import logging
 import asyncio
+import logging
 import os
 
-from aiohttp import web
 from sqlalchemy import create_engine
 
-from app.context import AppContext
-from app.middlewares import AuthMiddleware
+from aiohttp import web
 from app import routes
+from app.context import AppContext
 from app.db import metadata
 from app.init_db import create_roles_admin
+from app.middlewares import AuthMiddleware
 
 
 log = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 from datetime import datetime
+
 from marshmallow import Schema, fields
 from marshmallow.validate import Length, Range
-
 
 BIRTH_DATE_FORMAT = '%d-%m-%Y'
 

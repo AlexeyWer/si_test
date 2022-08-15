@@ -1,10 +1,10 @@
 from typing import List, Optional
 
-from sqlalchemy import select, cast, String, update, delete
+from sqlalchemy import String, cast, delete, select, update
 
-from .db import users, roles, Role
-from .schema import User, AuthUserSchema, ResponseUserSchema, UpdateUserSchema
 from .context import AppContext
+from .db import Role, roles, users
+from .schema import AuthUserSchema, ResponseUserSchema, UpdateUserSchema, User
 
 
 async def create_user(context: AppContext, user: AuthUserSchema) -> User:

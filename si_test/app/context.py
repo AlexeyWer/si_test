@@ -1,5 +1,5 @@
-import typing as tp
 import os
+import typing as tp
 
 from databases import Database
 

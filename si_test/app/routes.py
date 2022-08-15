@@ -1,6 +1,6 @@
 from aiohttp import web
-
 from app.context import AppContext
+
 from .api.v1 import auth, users
 
 

@@ -1,11 +1,11 @@
+import json
 import logging
 import os
-import json
-from typing import Callable
 from http import HTTPStatus
+from typing import Callable
 
-from aiohttp import web
 import jwt
+from aiohttp import web
 
 from . import crud
 from .context import AppContext

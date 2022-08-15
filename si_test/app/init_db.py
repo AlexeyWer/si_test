@@ -1,9 +1,9 @@
 import datetime as dt
 
-from sqlalchemy.engine import Engine
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.engine import Engine
 
-from .db import users, roles, Role
+from .db import Role, roles, users
 
 
 def create_roles_admin(engine: Engine) -> None:

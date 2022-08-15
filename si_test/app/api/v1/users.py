@@ -4,11 +4,11 @@ from http import HTTPStatus
 from aiohttp import web
 from marshmallow import ValidationError
 
+from app import crud
 from app.context import AppContext
+from app.db import Role
 from app.middlewares import json_response
 from app.schema import UpdateUserSchema
-from app import crud
-from app.db import Role
 
 
 log = logging.getLogger(__name__)

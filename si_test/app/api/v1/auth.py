@@ -4,18 +4,12 @@ from http import HTTPStatus
 
 import jwt
 from aiohttp import web
-from marshmallow import ValidationError
-
-from app.context import AppContext
-from app.schema import AuthUserSchema
-from app.middlewares import (
-    JWT_EXP_DELTA_SECONDS,
-    JWT_ALGORITH,
-    JWT_SECRET,
-    json_response
-)
 from app import crud
-
+from app.context import AppContext
+from app.middlewares import (JWT_ALGORITH, JWT_EXP_DELTA_SECONDS, JWT_SECRET,
+                             json_response)
+from app.schema import AuthUserSchema
+from marshmallow import ValidationError
 
 log = logging.getLogger(__name__)
 
