@@ -11,32 +11,11 @@ from app.middlewares import (JWT_ALGORITH, JWT_EXP_DELTA_SECONDS, JWT_SECRET,
 from app.schema import AuthUserSchema
 from marshmallow import ValidationError
 
+
 log = logging.getLogger(__name__)
 
 
 async def signup(request: web.Request, context: AppContext) -> web.Response:
-    """
-    Optional route description
-    ---
-    summary: Info for a specific pet
-    tags:
-      - pets
-    parameters:
-      - name: pet_id
-        in: path
-        required: true
-        description: The id of the pet to retrieve
-        schema:
-          type: integer
-          format: int32
-    responses:
-      '200':
-        description: Expected response to a valid request
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Pet"
-    """
     user_data = await request.json()
     schema = AuthUserSchema()
 

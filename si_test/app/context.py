@@ -5,7 +5,7 @@ from databases import Database
 
 
 class AppContext:
-    def __init__(self, *, secrets_dir: str):
+    def __init__(self):
         self.db: tp.Optional[Database] = None
 
     async def on_startup(self, app=None):
