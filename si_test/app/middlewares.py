@@ -7,7 +7,7 @@ from typing import Callable
 import jwt
 from aiohttp import web
 from marshmallow import ValidationError
-from aiohttp.web_exceptions import HTTPException
+from aiohttp.web_exceptions import HTTPException, HTTPMethodNotAllowed
 
 from . import crud
 from .context import AppContext
@@ -69,12 +69,18 @@ class ExceptionMiddleware:
             return await json_response(
                 {'errors': err.messages}, status=HTTPStatus.BAD_REQUEST
             )
+        except HTTPMethodNotAllowed as err:
+            return await json_response(
+                {'errors': err.text}, status=err.status
+            )
         except HTTPException as err:
             return await json_response(
                 {'errors': err.text}, status=err.status
             )
         except Exception as err:
-            log.error(f'Non handle error: {str(err)}')
+            log.error(
+                f'Non handle error: type-{type(err)} message-{str(err)}'
+            )
             return await json_response(
                 {'errors': 'Try again later'},
                 status=HTTPStatus.SERVICE_UNAVAILABLE

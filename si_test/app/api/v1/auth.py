@@ -5,7 +5,6 @@ from http import HTTPStatus
 import jwt
 from aiohttp import web
 from app import crud
-from app.context import AppContext
 from app.middlewares import (JWT_ALGORITH, JWT_EXP_DELTA_SECONDS, JWT_SECRET,
                              json_response)
 from app.schema import AuthUserSchema
@@ -14,7 +13,8 @@ from app.schema import AuthUserSchema
 log = logging.getLogger(__name__)
 
 
-async def signup(request: web.Request, context: AppContext) -> web.Response:
+async def signup(request: web.Request) -> web.Response:
+    context = request.app['context']
     user_data = await request.json()
     schema = AuthUserSchema()
     data = schema.load(user_data)
@@ -24,7 +24,8 @@ async def signup(request: web.Request, context: AppContext) -> web.Response:
     return await json_response({'message': message}, status=HTTPStatus.CREATED)
 
 
-async def login(request: web.Request, context: AppContext) -> web.Response:
+async def login(request: web.Request) -> web.Response:
+    context = request.app['context']
     user_data = await request.json()
     schema = AuthUserSchema()
     data = schema.load(user_data)

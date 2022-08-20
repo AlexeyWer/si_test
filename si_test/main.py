@@ -31,8 +31,9 @@ async def create_app():
 
     app.on_startup.append(ctx.on_startup)
     app.on_shutdown.append(ctx.on_shutdown)
+    app['context'] = ctx
 
-    routes.setup_routes(app, ctx)
+    routes.setup_routes(app)
 
     return app
 
