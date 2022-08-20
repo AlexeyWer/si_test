@@ -6,9 +6,14 @@ from typing import Callable
 
 import jwt
 from aiohttp import web
+from marshmallow import ValidationError
+from aiohttp.web_exceptions import HTTPException
 
 from . import crud
 from .context import AppContext
+
+
+log = logging.getLogger(__name__)
 
 JWT_SECRET = os.getenv('JWT_SECRET', 'fake_secret')
 JWT_ALGORITH = 'HS256'
@@ -52,3 +57,25 @@ class AuthMiddleware:
             user = await crud.get_user_by_id(self.context, payload['user_id'])
             request.user = user
         return await handler(request)
+
+
+class ExceptionMiddleware:
+
+    @web.middleware
+    async def middleware(self, request: web.Request, handler: Callable):
+        try:
+            return await handler(request)
+        except ValidationError as err:
+            return await json_response(
+                {'errors': err.messages}, status=HTTPStatus.BAD_REQUEST
+            )
+        except HTTPException as err:
+            return await json_response(
+                {'errors': err.text}, status=err.status
+            )
+        except Exception as err:
+            log.error(f'Non handle error: {str(err)}')
+            return await json_response(
+                {'errors': 'Try again later'},
+                status=HTTPStatus.SERVICE_UNAVAILABLE
+            )

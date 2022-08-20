@@ -9,7 +9,7 @@ from app import routes
 from app.context import AppContext
 from app.db import metadata
 from app.init_db import create_roles_admin
-from app.middlewares import AuthMiddleware
+from app.middlewares import AuthMiddleware, ExceptionMiddleware
 
 
 log = logging.getLogger(__name__)
@@ -22,6 +22,8 @@ async def create_app():
 
     auth_middleware = AuthMiddleware(ctx)
     app.middlewares.append(auth_middleware.middleware)
+    exception_middleware = ExceptionMiddleware()
+    app.middlewares.append(exception_middleware.middleware)
 
     engine = create_engine(os.getenv('DATABASE_URL'))
     metadata.create_all(engine)
