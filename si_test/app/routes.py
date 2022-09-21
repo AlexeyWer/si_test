@@ -14,10 +14,10 @@ def setup_routes(app: web.Application) -> None:
         auth.login
     )
     app.router.add_get(
-        prefix + 'users/',
-        users.get_users_list,
+        prefix + users.UsersView.URL_PATH_LIST,
+        users.UsersView.get_users_list,
     )
     app.router.add_view(
-        prefix + users.UsersView.URL_PATH,
+        prefix + users.UsersView.URL_PATH_DETAIL,
         users.UsersView
     )

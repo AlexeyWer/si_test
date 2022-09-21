@@ -13,7 +13,8 @@ log = logging.getLogger(__name__)
 
 
 class UsersView(web.View):
-    URL_PATH = r'users/{user_id:\d+}/'
+    URL_PATH_DETAIL = r'users/{user_id:\d+}/'
+    URL_PATH_LIST = 'users/'
 
     @property
     def user_id(self):
@@ -43,6 +44,11 @@ class UsersView(web.View):
         return await json_response(
             {'result': user.to_response()}, status=HTTPStatus.OK
         )
+
+    async def get_users_list(request: web.Request) -> web.Response:
+        context = request.app['context']
+        users = await crud.get_all_users(context)
+        return await json_response({'result': users}, status=HTTPStatus.OK)
 
     async def put(self) -> web.Response:
         await self.check_permissions()
@@ -78,9 +84,3 @@ class UsersView(web.View):
             )
         await crud.delete_user_by_id(self.context, self.user_id)
         return await json_response(status=HTTPStatus.NO_CONTENT)
-
-
-async def get_users_list(request: web.Request) -> web.Response:
-    context = request.app['context']
-    users = await crud.get_all_users(context)
-    return await json_response({'result': users}, status=HTTPStatus.OK)
